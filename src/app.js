@@ -26,10 +26,11 @@ server.on('connection', (ws) => {
   console.log(`ID: ${ws.id} connected`);
 
   ws.on('message', (message) => {
-    let data = new Object;
-    let time = new Date();
-    data.user = ws.id;
-    data.time = `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
+    const time = new Date();
+    let data = {
+      user: ws.id,
+      time: `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`
+    };
     try {
       data.message = JSON.parse(message).message;
       data.message = sanitizer.escape(data.message);
