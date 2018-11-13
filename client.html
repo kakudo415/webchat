@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebChat Clinet</title>
+  <style>
+    .message {
+      padding: 1rem;
+      border-bottom: 1px solid #000A;
+    }
+    .message .footer {
+      color: #0005;
+    }
+  </style>
 </head>
 <body>
   <input type="text" id="text-form">
@@ -13,7 +22,11 @@
     let socket = new WebSocket("wss://kakudo.app/webchat/ws/");
     // 接続
     socket.addEventListener("open", (ev) => {
-      document.getElementById("message-area").innerHTML += `<div style="padding: 1rem; color: #C2EA7E; border-bottom: 1px solid #000A;">接続完了</div>`;
+      const msgElm = document.createElement("div")
+      msgElm.classList.add("message")
+      msgElm.style.color = "#C2EA7E"
+      msgElm.textContent = "接続完了"
+      document.getElementById("message-area").appendChild(msgElm)
     });
     // 再接続
     socket.addEventListener("close", () => {
@@ -23,7 +36,28 @@
     // 受信
     socket.addEventListener("message", (ev) => {
       let msg = JSON.parse(ev.data);
-      document.getElementById("message-area").innerHTML += `<div style="padding: 1rem; border-bottom: 1px solid #000A;"><div>${msg.message}</div><div style="color: #0005;"><span style="font-weight: bold;">ID: ${msg.user}</span> TIME: ${msg.time}</div></div>`;
+      const msgElm = document.createElement("div")
+      msgElm.classList.add("message")
+
+      const textElm = document.createElement("div")
+      textElm.textContent = msg.message
+      msgElm.appendChild(textElm)
+
+      const footerElm = document.createElement("div")
+      footerElm.classList.add("footer")
+
+      const userElm = document.createElement("span")
+      userElm.style.fontWeight = "bold"
+      userElm.style.marginRight = "0.5em"
+      userElm.textContent = `ID: ${msg.user}`
+      footerElm.appendChild(userElm)
+
+      const timeElm = document.createElement("span")
+      timeElm.textContent = `TIME: ${msg.time}`
+      footerElm.appendChild(timeElm)
+      msgElm.appendChild(footerElm)
+
+      document.getElementById("message-area").appendChild(msgElm)
     });
     // 送信
     const send = () => {
