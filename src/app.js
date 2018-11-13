@@ -7,20 +7,23 @@ const server = new wsServer({
 let id = 0;
 
 http.createServer((req, res) => {
-  fs.readFile('client.html', (err, data) => {
-    if (err) {
-      res.end(404);
-    } else {
-      res.writeHead(200, {
-        'Content-Type': 'text/html'
-      });
-      res.end(data);
-    }
+    fs.readFile('client.html', (err, data) => {
+      if (err) {
+        res.end(404);
+      } else {
+        res.writeHead(200, {
+          'Content-Type': 'text/html'
+        });
+        res.end(data);
+      }
+    });
   })
-}).listen(50000);
+  .listen(50000);
 
 server.on('connection', (ws) => {
   ws.id = id++;
+  console.log(`ID: ${ws.id} connected`);
+
   ws.on('message', (message) => {
     let data = JSON.parse(message);
     data.user = ws.id;
