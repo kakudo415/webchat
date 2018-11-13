@@ -61,8 +61,9 @@
     });
     // 送信
     const send = () => {
-      let msg = new Object;
-      msg.message = document.getElementById("text-form").value;
+      const msg = {
+        message: document.getElementById("text-form").value
+      };
       socket.send(JSON.stringify(msg));
       document.getElementById("text-form").value = '';
     };
