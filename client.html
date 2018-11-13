@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Clinet</title>
+</head>
+<body>
+  <input type="text" id="text-form">
+  <input type="button" value="送信" onclick="send();">
+  <div id="message-area"></div>
+  <script>
+    let socket = new WebSocket("ws://127.0.0.1:8080");
+    // 接続
+    socket.addEventListener("open", (ev) => {
+      post("接続成功");
+    });
+    // 受信
+    socket.addEventListener("message", (ev) => {
+      let msg = JSON.parse(ev.data);
+      post(`${msg.message}`);
+    });
+    // 送信
+    const send = () => {
+      socket.send(`{"message": "${document.getElementById("text-form").value}"}`);
+      document.getElementById("text-form").value = '';
+    };
+    const post = (msg) => {
+      document.getElementById("message-area").innerHTML += `<div>${msg}</div>`;
+    };
+  </script>
+</body>
+</html>
