@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +14,11 @@
     // 接続
     socket.addEventListener("open", (ev) => {
       document.getElementById("message-area").innerHTML += `<div style="padding: 1rem; color: #C2EA7E; border-bottom: 1px solid #000A;">接続完了</div>`;
+    });
+    // 再接続
+    socket.addEventListener("close", () => {
+      socket.close();
+      socket = new WebSocket("wss://kakudo.app/webchat/ws/");
     });
     // 受信
     socket.addEventListener("message", (ev) => {

@@ -25,16 +25,25 @@ server.on('connection', (ws) => {
   console.log(`ID: ${ws.id} connected`);
 
   ws.on('message', (message) => {
-    let data = JSON.parse(message);
-    data.user = ws.id;
+    let data = new Object;
     let time = new Date();
+    data.user = ws.id;
     data.time = `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
-    server.clients.forEach((client) => {
-      client.send(JSON.stringify(data));
-    });
+    try {
+      data.message = JSON.parse(message).message;
+    } catch (err) {
+      data.message = 'この人のメッセージなんか変かも！';
+    }
+    broadcast(data);
   });
 
   ws.on('close', () => {
     console.log('CONNECTION CLOSED');
   });
 });
+
+const broadcast = (msg) => {
+  server.clients.forEach((client) => {
+    client.send(JSON.stringify(msg));
+  });
+}
