@@ -1,8 +1,23 @@
+const http = require('http');
+const fs = require('fs');
 const wsServer = require('ws').Server;
 const server = new wsServer({
-  port: 8080
+  port: 50001
 });
 let id = 0;
+
+http.createServer((req, res) => {
+  fs.readFile('client.html', (err, data) => {
+    if (err) {
+      res.end(404);
+    } else {
+      res.writeHead(200, {
+        'Content-Type': 'text/html'
+      });
+      res.end(data);
+    }
+  })
+}).listen(50000);
 
 server.on('connection', (ws) => {
   ws.id = id++;
