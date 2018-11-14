@@ -63,7 +63,7 @@
     <div id="message-area"></div>    
   </div>
   <script>
-    let socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
+    let socket = new WebSocket("wss://kakudo.app/webchat/ws/");
     // 接続
     socket.addEventListener("open", (ev) => {
       const msgElm = document.createElement("div");
@@ -75,7 +75,7 @@
     // 再接続
     socket.addEventListener("close", () => {
       socket.close();
-      socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
+      socket = new WebSocket("wss://kakudo.app/webchat/ws/");
       const msgElm = document.createElement("div");
       msgElm.classList.add("message");
       msgElm.style.color = "#4CAF50";
@@ -124,7 +124,7 @@
         socket.send(JSON.stringify(msg));
       } catch (err) {
         socket.close();
-        socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
+        socket = new WebSocket("wss://kakudo.app/webchat/ws/");
       }
       document.getElementById("text-form").value = '';
     };
