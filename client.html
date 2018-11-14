@@ -111,10 +111,9 @@
       }
       try {
         socket.send(JSON.stringify(msg));
-      }
-      catch (err) {
+      } catch (err) {
         socket.close();
-        socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
+        socket = new WebSocket("wss://kakudo.app/webchat/ws/");
       }
       document.getElementById("text-form").value = '';
     };

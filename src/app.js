@@ -37,9 +37,16 @@ server.on('connection', (ws) => {
     };
     try {
       let post = JSON.parse(message).message;
+      if (post.length > 1000) {
+        throw "too long";
+      }
       data.message = post;
     } catch (err) {
-      data.message = 'この人のメッセージなんか変かも！';
+      if (err === "too long") {
+        data.message = '1000文字超えるめちゃんこ長いのは無しで！';
+      } else {
+        data.message = 'この人のメッセージなんか変かも！';
+      }
     }
     broadcast([data]);
     msgHistory.push(data);
