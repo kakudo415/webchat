@@ -19,7 +19,7 @@
   <input type="button" value="送信" onclick="send();">
   <div id="message-area"></div>
   <script>
-    let socket = new WebSocket("wss://kakudo.app/webchat/ws/");
+    let socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
     // 接続
     socket.addEventListener("open", (ev) => {
       const msgElm = document.createElement("div")
@@ -31,7 +31,7 @@
     // 再接続
     socket.addEventListener("close", () => {
       socket.close();
-      socket = new WebSocket("wss://kakudo.app/webchat/ws/");
+      socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
     });
     // 受信
     socket.addEventListener("message", (ev) => {
@@ -64,7 +64,13 @@
       const msg = {
         message: document.getElementById("text-form").value
       };
-      socket.send(JSON.stringify(msg));
+      try {
+        socket.send(JSON.stringify(msg));
+      }
+      catch (err) {
+        socket.close();
+        socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
+      }
       document.getElementById("text-form").value = '';
     };
   </script>

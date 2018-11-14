@@ -4,7 +4,7 @@ const wsServer = require('ws').Server;
 const server = new wsServer({
   port: 50001
 });
-let id = 0;
+let lastID = 0;
 
 http.createServer((req, res) => {
       fs.readFile('client.html', (err, data) => {
@@ -21,19 +21,17 @@ http.createServer((req, res) => {
     .listen(50000);
 
 server.on('connection', (ws) => {
-  ws.id = id++;
-  console.log(`ID: ${ws.id} connected`);
+  ws.userID = lastID++;
 
   ws.on('message', (message) => {
     const time = new Date();
     let data = {
-      user: ws.id,
+      user: ws.userID,
       time: `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`
     };
     try {
-      let message = JSON.parse(message).message;
-      if (typeof message !== "string") throw 'not string'
-      data.message = message
+      let post = JSON.parse(message).message;
+      data.message = post;
     } catch (err) {
       data.message = 'この人のメッセージなんか変かも！';
     }
