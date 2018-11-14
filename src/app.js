@@ -33,7 +33,8 @@ server.on('connection', (ws) => {
     const time = new Date();
     let data = {
       user: ws.userID,
-      time: `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`
+      time: `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${("0" + time.getMinutes()).slice(-2)}`,
+      isErr: false
     };
     try {
       let post = JSON.parse(message).message;
@@ -46,12 +47,13 @@ server.on('connection', (ws) => {
       data.message = post;
     } catch (err) {
       if (err === 'too long') {
-        data.message = '1000文字超えたらあかんで！！';
+        data.message = '1000文字超えたらあかんで！';
       } else if (err === 'not string') {
         data.message = 'ちゃんと文字データ送信せぇ！';
       } else {
-        data.message = '自分なんか変なもん送ったやろ？';
+        data.message = '変なもん送ったらあかんで！';
       }
+      data.isErr = true;
     }
     broadcast([data]);
     msgHistory.push(data);

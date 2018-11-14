@@ -48,6 +48,10 @@
       color: #0005;
       font-size: 12px;
     }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+    }
   </style>
 </head>
 <body>
@@ -59,19 +63,24 @@
     <div id="message-area"></div>    
   </div>
   <script>
-    let socket = new WebSocket("wss://kakudo.app/webchat/ws/");
+    let socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
     // 接続
     socket.addEventListener("open", (ev) => {
       const msgElm = document.createElement("div");
       msgElm.classList.add("message");
       msgElm.style.color = "#4CAF50";
       msgElm.textContent = "接続完了";
-      document.getElementById("message-area").appendChild(msgElm);
+      post(msgElm);
     });
     // 再接続
     socket.addEventListener("close", () => {
       socket.close();
-      socket = new WebSocket("wss://kakudo.app/webchat/ws/");
+      socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
+      const msgElm = document.createElement("div");
+      msgElm.classList.add("message");
+      msgElm.style.color = "#4CAF50";
+      msgElm.textContent = "再接続完了";
+      post(msgElm);
     });
     // 受信
     socket.addEventListener("message", (ev) => {
@@ -82,23 +91,25 @@
 
         const textElm = document.createElement("div");
         textElm.textContent = msg.message;
+        if (msg.isErr) {
+          textElm.style.color = "#F44336";
+        }
         msgElm.appendChild(textElm);
 
         const footerElm = document.createElement("div");
         footerElm.classList.add("footer");
 
         const userElm = document.createElement("span");
+        userElm.textContent = "@" + msg.user;
         userElm.style.fontWeight = "bold";
-        userElm.style.marginRight = "0.5em";
-        userElm.textContent = `ID: ${msg.user}`;
         footerElm.appendChild(userElm);
 
         const timeElm = document.createElement("span");
-        timeElm.textContent = `TIME: ${msg.time}`;
+        timeElm.textContent = msg.time;
         footerElm.appendChild(timeElm);
         msgElm.appendChild(footerElm);
 
-        document.getElementById("message-area").insertBefore(msgElm,document.getElementById("message-area").firstChild);
+        post(msgElm);
       });
     });
     // 送信
@@ -113,7 +124,7 @@
         socket.send(JSON.stringify(msg));
       } catch (err) {
         socket.close();
-        socket = new WebSocket("wss://kakudo.app/webchat/ws/");
+        socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
       }
       document.getElementById("text-form").value = '';
     };
@@ -122,6 +133,9 @@
         return;
       }
       document.getElementById("send-button").click();
+    };
+    const post = (elm) => {
+      document.getElementById("message-area").insertBefore(elm, document.getElementById("message-area").firstChild);
     };
   </script>
 </body>
