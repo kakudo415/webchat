@@ -4,29 +4,69 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebChat Clinet</title>
+  <link rel="stylesheet" href="https://kakudo415.github.io/null.css/2.1.css">
   <style>
+    #container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    #form {
+      margin: 1rem 0;
+      display: flex;
+      justify-content: space-between;
+    }
+    #text-form {
+      height: 2rem;
+      width: calc(100% - 6rem);
+      padding: 0 1rem;
+      border: 1px solid #0005;
+      border-radius: 1rem;
+    }
+    #send-button {
+      height: 2rem;
+      width: 5rem;
+      padding: 0 1rem;
+      border: 1px solid #03A9F4;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition-duration: 0.2s;
+    }
+    #send-button:hover {
+      color: #FFF;
+      background: #03A9F4;
+    }
     .message {
       padding: 1rem;
-      border-bottom: 1px solid #000A;
+      border-bottom: 1px solid #0005;
+    }
+    .message:last-child {
+      border: none;
     }
     .message .footer {
+      padding: 0.5rem 0 0;
       color: #0005;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
-  <input type="text" id="text-form">
-  <input type="button" value="送信" onclick="send();">
-  <div id="message-area"></div>
+  <div id="container">
+    <div id="form">
+      <input type="text" id="text-form">
+      <input type="button" value="送信" onclick="send();" id="send-button">
+    </div>
+    <div id="message-area"></div>    
+  </div>
   <script>
     let socket = new WebSocket("wss://kakudo.app/webchat/ws/");
     // 接続
     socket.addEventListener("open", (ev) => {
-      const msgElm = document.createElement("div")
-      msgElm.classList.add("message")
-      msgElm.style.color = "#C2EA7E"
-      msgElm.textContent = "接続完了"
-      document.getElementById("message-area").appendChild(msgElm)
+      const msgElm = document.createElement("div");
+      msgElm.classList.add("message");
+      msgElm.style.color = "#4CAF50";
+      msgElm.textContent = "接続完了";
+      document.getElementById("message-area").appendChild(msgElm);
     });
     // 再接続
     socket.addEventListener("close", () => {
@@ -36,34 +76,37 @@
     // 受信
     socket.addEventListener("message", (ev) => {
       let msg = JSON.parse(ev.data);
-      const msgElm = document.createElement("div")
-      msgElm.classList.add("message")
+      const msgElm = document.createElement("div");
+      msgElm.classList.add("message");
 
-      const textElm = document.createElement("div")
-      textElm.textContent = msg.message
-      msgElm.appendChild(textElm)
+      const textElm = document.createElement("div");
+      textElm.textContent = msg.message;
+      msgElm.appendChild(textElm);
 
-      const footerElm = document.createElement("div")
-      footerElm.classList.add("footer")
+      const footerElm = document.createElement("div");
+      footerElm.classList.add("footer");
 
-      const userElm = document.createElement("span")
-      userElm.style.fontWeight = "bold"
-      userElm.style.marginRight = "0.5em"
-      userElm.textContent = `ID: ${msg.user}`
-      footerElm.appendChild(userElm)
+      const userElm = document.createElement("span");
+      userElm.style.fontWeight = "bold";
+      userElm.style.marginRight = "0.5em";
+      userElm.textContent = `ID: ${msg.user}`;
+      footerElm.appendChild(userElm);
 
-      const timeElm = document.createElement("span")
-      timeElm.textContent = `TIME: ${msg.time}`
-      footerElm.appendChild(timeElm)
-      msgElm.appendChild(footerElm)
+      const timeElm = document.createElement("span");
+      timeElm.textContent = `TIME: ${msg.time}`;
+      footerElm.appendChild(timeElm);
+      msgElm.appendChild(footerElm);
 
-      document.getElementById("message-area").appendChild(msgElm)
+      document.getElementById("message-area").insertBefore(msgElm,document.getElementById("message-area").firstChild);
     });
     // 送信
     const send = () => {
       const msg = {
         message: document.getElementById("text-form").value
       };
+      if (msg.message.length === 0) {
+        return;
+      }
       try {
         socket.send(JSON.stringify(msg));
       }
@@ -72,6 +115,12 @@
         socket = new WebSocket("ws://127.0.0.1:50001/webchat/ws/");
       }
       document.getElementById("text-form").value = '';
+    };
+    document.getElementById("text-form").onkeypress = (ev) => {
+      if (ev.keyCode !== 13 || (ev.keyCode === 13 && (ev.shiftKey === true || ev.ctrlKey === true || ev.altKey === true))) {
+        return;
+      }
+      document.getElementById("send-button").click();
     };
   </script>
 </body>
