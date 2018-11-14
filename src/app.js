@@ -38,9 +38,7 @@ server.on('connection', (ws) => {
     broadcast(data);
   });
 
-  ws.on('close', () => {
-    console.log('CONNECTION CLOSED');
-  });
+  ws.on('close', () => {});
 });
 
 const broadcast = (msg) => {
