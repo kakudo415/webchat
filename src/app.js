@@ -5,6 +5,7 @@ const server = new wsServer({
   port: 50001
 });
 let lastID = 0;
+let msgHistory = new Array;
 
 http.createServer((req, res) => {
       fs.readFile('client.html', (err, data) => {
@@ -22,6 +23,7 @@ http.createServer((req, res) => {
 
 server.on('connection', (ws) => {
   ws.userID = lastID++;
+  broadcast(msgHistory);
 
   ws.on('message', (message) => {
     const time = new Date();
@@ -35,7 +37,8 @@ server.on('connection', (ws) => {
     } catch (err) {
       data.message = 'この人のメッセージなんか変かも！';
     }
-    broadcast(data);
+    broadcast([data]);
+    msgHistory.push(data);
   });
 
   ws.on('close', () => {});
