@@ -37,15 +37,20 @@ server.on('connection', (ws) => {
     };
     try {
       let post = JSON.parse(message).message;
+      if (typeof post !== 'string') {
+        throw 'not string'
+      }
       if (post.length > 1000) {
-        throw "too long";
+        throw 'too long';
       }
       data.message = post;
     } catch (err) {
-      if (err === "too long") {
-        data.message = '1000文字超えるめちゃんこ長いのは無しで！';
+      if (err === 'too long') {
+        data.message = '1000文字超えたらあかんで！！';
+      } else if (err === 'not string') {
+        data.message = 'ちゃんと文字データ送信せぇ！';
       } else {
-        data.message = 'この人のメッセージなんか変かも！';
+        data.message = '自分なんか変なもん送ったやろ？';
       }
     }
     broadcast([data]);
