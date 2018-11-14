@@ -47,7 +47,9 @@ server.on('connection', (ws) => {
 const broadcast = (msg) => {
   server.clients.forEach((client) => {
     client.send(JSON.stringify(msg), (err) => {
-      client.close();
+      if (err) {
+        client.close();
+      }
     });
   });
 }
