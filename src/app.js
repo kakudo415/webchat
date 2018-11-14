@@ -8,18 +8,18 @@ const server = new wsServer({
 let id = 0;
 
 http.createServer((req, res) => {
-    fs.readFile('client.html', (err, data) => {
-      if (err) {
-        res.end(404);
-      } else {
-        res.writeHead(200, {
-          'Content-Type': 'text/html'
-        });
-        res.end(data);
-      }
-    });
-  })
-  .listen(50000);
+      fs.readFile('client.html', (err, data) => {
+        if (err) {
+          res.end(404);
+        } else {
+          res.writeHead(200, {
+            'Content-Type': 'text/html'
+          });
+          res.end(data);
+        }
+      });
+    })
+    .listen(50000);
 
 server.on('connection', (ws) => {
   ws.id = id++;
@@ -46,6 +46,8 @@ server.on('connection', (ws) => {
 
 const broadcast = (msg) => {
   server.clients.forEach((client) => {
-    client.send(JSON.stringify(msg));
+    client.send(JSON.stringify(msg), (err) => {
+      client.close();
+    });
   });
 }
