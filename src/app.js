@@ -1,6 +1,5 @@
 const http = require('http');
 const fs = require('fs');
-const sanitizer = require('sanitizer');
 const wsServer = require('ws').Server;
 const server = new wsServer({
   port: 50001
@@ -26,13 +25,15 @@ server.on('connection', (ws) => {
   console.log(`ID: ${ws.id} connected`);
 
   ws.on('message', (message) => {
-    let data = new Object;
-    let time = new Date();
-    data.user = ws.id;
-    data.time = `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
+    const time = new Date();
+    let data = {
+      user: ws.id,
+      time: `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`
+    };
     try {
-      data.message = JSON.parse(message).message;
-      data.message = sanitizer.escape(data.message);
+      let message = JSON.parse(message).message;
+      if (typeof message !== "string") throw 'not string'
+      data.message = message
     } catch (err) {
       data.message = 'この人のメッセージなんか変かも！';
     }
