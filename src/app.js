@@ -23,7 +23,11 @@ http.createServer((req, res) => {
 
 server.on('connection', (ws) => {
   ws.userID = lastID++;
-  broadcast(msgHistory);
+  ws.send(JSON.stringify(msgHistory), (err) => {
+    if (err) {
+      ws.close();
+    }
+  });
 
   ws.on('message', (message) => {
     const time = new Date();
