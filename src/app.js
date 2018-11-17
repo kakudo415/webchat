@@ -1,73 +1,105 @@
-const http = require('http');
-const fs = require('fs');
+const shortid = require('shortid');
 const wsServer = require('ws').Server;
-const server = new wsServer({
-  port: 50001
-});
-let lastID = 0;
-let msgHistory = new Array;
 
-http.createServer((req, res) => {
-      fs.readFile('client.html', (err, data) => {
-        if (err) {
-          res.end(404);
-        } else {
-          res.writeHead(200, {
-            'Content-Type': 'text/html'
-          });
-          res.end(data);
-        }
-      });
-    })
-    .listen(50000);
+const server = new wsServer({
+  port: 50000,
+  maxPayload: 10000
+});
+const msgQueue = {
+  msgs: []
+};
+const msgHistory = [];
+const accessTime = {};
 
 server.on('connection', (ws) => {
-  ws.userID = lastID++;
-  ws.send(JSON.stringify(msgHistory), (err) => {
-    if (err) {
-      ws.close();
-    }
-  });
+  ws.userID = shortid.generate();
+  ws.send(JSON.stringify({
+    msgs: msgHistory
+  }, null, 2));
 
-  ws.on('message', (message) => {
-    const time = new Date();
-    let data = {
-      user: ws.userID,
-      time: `${time.getFullYear()}/${time.getMonth()}/${time.getDate()} ${time.getHours()}:${("0" + time.getMinutes()).slice(-2)}`,
-      isErr: false
-    };
+  ws.on('message', (msg) => {
+    if (isTooEarly(ws.userID)) {
+      return;
+    }
+    accessTime[ws.userID] = nowTime();
+    let data;
     try {
-      let post = JSON.parse(message).message;
-      if (typeof post !== 'string') {
-        throw 'not string'
+      data = JSON.parse(msg).msg;
+      if (typeof data !== 'string') {
+        throw 'not string';
       }
-      if (post.length > 1000) {
+      if (data.length > 1000) {
         throw 'too long';
       }
-      data.message = post;
-    } catch (err) {
-      if (err === 'too long') {
-        data.message = '1000文字超えたらあかんで！';
-      } else if (err === 'not string') {
-        data.message = 'ちゃんと文字データ送信せぇ！';
-      } else {
-        data.message = '変なもん送ったらあかんで！';
+      if (data.length === 0) {
+        throw 'too short';
       }
-      data.isErr = true;
+    } catch (err) {
+      switch (err) {
+        case 'not string':
+          data = 'ちゃんと文字列データ送って！';
+          break;
+        case 'too long':
+          data = 'そんな長いの送らんといて！';
+          break;
+        case 'too short':
+          data = '空のデータ送るんちゃうわ！';
+          break;
+        default:
+          data = 'データ構造間違えとるで！';
+      }
+      ws.send(JSON.stringify({
+        msgs: [{
+          msg: data,
+          uid: ws.userID,
+          time: nowTime()
+        }]
+      }, null, 2));
+      return;
     }
-    broadcast([data]);
-    msgHistory.push(data);
+    msgQueue.msgs.push({
+      msg: data,
+      uid: ws.userID,
+      time: nowTime()
+    });
+    msgHistory.push({
+      msg: data,
+      uid: ws.userID,
+      time: nowTime()
+    });
   });
 
-  ws.on('close', () => {});
+  ws.on('error', (err) => {
+    console.error(`[ERROR WebSocket] ${err}`);
+  });
 });
 
-const broadcast = (msg) => {
+const sendToEveryone = (msg) => {
+  if (msgQueue.msgs.length == 0) {
+    return;
+  }
   server.clients.forEach((client) => {
-    client.send(JSON.stringify(msg), (err) => {
+    client.send(msg, (err) => {
       if (err) {
-        client.close();
+        console.error(`[ERROR Send] ${err}`);
       }
     });
   });
-}
+};
+
+const isTooEarly = (userID) => {
+  if (accessTime[userID]) {
+    return (nowTime() - 1) < accessTime[userID];
+  }
+  return false;
+};
+
+const nowTime = () => {
+  return Math.round(new Date().getTime() / 1000);
+};
+
+// 一秒ごとにまとめて送信
+setInterval(() => {
+  sendToEveryone(JSON.stringify(msgQueue, null, 2));
+  msgQueue.msgs = [];
+}, 1000);

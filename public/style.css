@@ -1,0 +1,71 @@
+#message-area-container {
+  padding: 0.5rem 0 4rem;
+}
+
+#message-area {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+}
+.message {
+  padding: 0.5rem;
+  border-top: 1px solid #0001;
+}
+.message:first-child {
+  border: none;
+}
+
+.message-text {
+  margin: 0 0 0.75rem;
+}
+
+.message-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #0005;
+  font-size: 0.8rem;
+}
+
+#input-area {
+  height: 4rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0;
+  z-index: 3;
+  background: #FFF;
+}
+
+#input-area > div {
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+}
+
+#message-input {
+  height: 3rem;
+  width: calc(100% - 5rem);
+  padding: 0.5rem;
+  border: 1px solid #0003;
+  border-radius: 0.75rem;
+  transition-duration: 200ms;
+}
+#message-input:focus {
+  border: 1px solid #0080ff;
+}
+
+#submit-button {
+  height: 3rem;
+  width: 4.5rem;
+  border: 1px solid #0003;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition-duration: 200ms;
+}
+#submit-button:hover {
+  border: 1px solid #0080ff;
+}
