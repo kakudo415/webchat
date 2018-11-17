@@ -5,7 +5,7 @@ const submitButton = document.getElementById('submit-button');
 var ws; // WebSocket
 
 const connect = () => {
-  ws = new WebSocket('ws:127.0.0.1:50000');
+  ws = new WebSocket('wss://kakudo.app/webchat/ws/');
 
   ws.onopen = () => {
     appendMessage({
