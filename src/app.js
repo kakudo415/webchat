@@ -14,7 +14,11 @@ const accessTime = {};
 server.on('connection', (ws) => {
   ws.userID = shortid.generate();
   ws.send(JSON.stringify({
-    msgs: msgHistory
+    msgs: [{
+      msg: '接続完了',
+      uid: 'システム',
+      time: nowTime()
+    }].concat(msgHistory)
   }, null, 2));
 
   ws.on('message', (msg) => {

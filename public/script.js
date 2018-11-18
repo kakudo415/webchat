@@ -5,15 +5,9 @@ const submitButton = document.getElementById('submit-button');
 var ws; // WebSocket
 
 const connect = () => {
-  ws = new WebSocket('wss://kakudo.app/webchat/ws/');
+  ws = new WebSocket('ws://127.0.0.1:50000/webchat/ws/');
 
-  ws.onopen = () => {
-    appendMessage({
-      msg: '接続完了',
-      uid: 'システム',
-      time: nowTime()
-    });
-  };
+  ws.onopen = () => {};
 
   ws.onmessage = (ev) => {
     try {
