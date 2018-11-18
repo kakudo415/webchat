@@ -73,9 +73,6 @@ server.on('connection', (ws) => {
 });
 
 const sendToEveryone = (msg) => {
-  if (msgQueue.msgs.length == 0) {
-    return;
-  }
   server.clients.forEach((client) => {
     client.send(msg, (err) => {
       if (err) {
@@ -98,6 +95,9 @@ const nowTime = () => {
 
 // 一秒ごとにまとめて送信
 setInterval(() => {
+  if (msgQueue.msgs.length == 0) {
+    return;
+  }
   sendToEveryone(JSON.stringify(msgQueue, null, 2));
   msgQueue.msgs = [];
 }, 1000);
