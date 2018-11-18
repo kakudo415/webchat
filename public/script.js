@@ -4,8 +4,8 @@ const messageInput = document.getElementById('message-input');
 const submitButton = document.getElementById('submit-button');
 var ws; // WebSocket
 
-const connect = () => {
-  ws = new WebSocket('wss://kakudo.app/webchat/ws/');
+const connect = (url) => {
+  ws = new WebSocket(url);
 
   ws.onopen = () => {};
 
@@ -47,7 +47,7 @@ const nowTime = () => {
   return Math.round(new Date().getTime() / 1000);
 };
 
-connect();
+connect('wss://kakudo.app/webchat/ws/');
 
 submitButton.onclick = () => {
   ws.send(JSON.stringify({
