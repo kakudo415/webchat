@@ -14,11 +14,7 @@ const accessTime = {};
 server.on('connection', (ws) => {
   ws.userID = shortid.generate();
   ws.send(JSON.stringify({
-    msgs: [{
-      msg: '接続完了',
-      uid: 'システム',
-      time: nowTime()
-    }].concat(msgHistory)
+    msgs: msgHistory
   }, null, 2));
 
   ws.on('message', (msg) => {
@@ -26,9 +22,8 @@ server.on('connection', (ws) => {
       return;
     }
     accessTime[ws.userID] = nowTime();
-    let data;
     try {
-      data = JSON.parse(msg).msg;
+      const data = JSON.parse(msg).msg;
       if (typeof data !== 'string') {
         throw 'not string';
       }
@@ -38,39 +33,38 @@ server.on('connection', (ws) => {
       if (data.length === 0) {
         throw 'too short';
       }
+      msgQueue.msgs.push({
+        msg: data,
+        uid: ws.userID,
+        time: nowTime()
+      });
+      msgHistory.push({
+        msg: data,
+        uid: ws.userID,
+        time: nowTime()
+      });
     } catch (err) {
       switch (err) {
         case 'not string':
-          data = 'ちゃんと文字列データ送って！';
+          emsg = 'ちゃんと文字列データ送って！';
           break;
         case 'too long':
-          data = 'そんな長いの送らんといて！';
+          emsg = 'そんな長いの送らんといて！';
           break;
         case 'too short':
-          data = '空のデータ送るんちゃうわ！';
+          emsg = '空のデータ送るんちゃうわ！';
           break;
         default:
-          data = 'データ構造間違えとるで！';
+          emsg = 'データ構造間違えとるで！';
       }
       ws.send(JSON.stringify({
         msgs: [{
-          msg: data,
+          msg: emsg,
           uid: ws.userID,
           time: nowTime()
         }]
       }, null, 2));
-      return;
     }
-    msgQueue.msgs.push({
-      msg: data,
-      uid: ws.userID,
-      time: nowTime()
-    });
-    msgHistory.push({
-      msg: data,
-      uid: ws.userID,
-      time: nowTime()
-    });
   });
 
   ws.on('error', (err) => {
