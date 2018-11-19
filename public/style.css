@@ -28,11 +28,9 @@
 }
 
 #input-area {
-  height: 4rem;
+  height: 3.5rem;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 0.5rem 0;
   position: fixed;
   bottom: 0;
   z-index: 3;
@@ -44,28 +42,29 @@
   width: 100%;
   margin: 0 auto;
   padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #message-input {
-  height: 3rem;
+  height: 2.5rem;
   width: calc(100% - 5rem);
   padding: 0.5rem;
-  border: 1px solid #0003;
-  border-radius: 0.75rem;
+  border: 2px solid #0002;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
   transition-duration: 200ms;
 }
 #message-input:focus {
-  border: 1px solid #0080ff;
+  border: 2px solid #0005;
 }
 
 #submit-button {
-  height: 3rem;
-  width: 4.5rem;
-  border: 1px solid #0003;
-  border-radius: 0.75rem;
-  cursor: pointer;
+  height: 2.5rem;
+  width: 5rem;
+  background: #0002;
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
   transition-duration: 200ms;
-}
-#submit-button:hover {
-  border: 1px solid #0080ff;
 }
