@@ -49,19 +49,17 @@ const nowTime = () => {
 
 connect('wss://kakudo.app/webchat/ws/');
 
-submitButton.onmouseover = () => {
+messageInput.oninput = () => {
   if (messageInput.value.length > 0) {
     submitButton.style.color = '#FFF';
     submitButton.style.background = '#4CAF50';
     submitButton.style.cursor = 'pointer';
-  };
+  } else {
+    submitButton.style.color = '#000';
+    submitButton.style.background = '#0002';
+    submitButton.style.cursor = 'default';
+  }
 }
-
-submitButton.onmouseout = () => {
-  submitButton.style.color = '#000';
-  submitButton.style.background = '#0002';
-  submitButton.style.cursor = 'default';
-};
 
 submitButton.onclick = () => {
   if (messageInput.value.length === 0) {
