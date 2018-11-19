@@ -47,7 +47,7 @@ const nowTime = () => {
   return Math.round(new Date().getTime() / 1000);
 };
 
-connect('wss://kakudo.app/webchat/ws/');
+connect('ws://127.0.0.1:50000/webchat/ws/');
 
 messageInput.oninput = () => {
   if (messageInput.value.length > 0) {
@@ -69,6 +69,9 @@ submitButton.onclick = () => {
     msg: messageInput.value
   }));
   messageInput.value = '';
+  submitButton.style.color = '#000';
+  submitButton.style.background = '#0002';
+  submitButton.style.cursor = 'default';
 };
 
 messageInput.onkeypress = (ev) => {
