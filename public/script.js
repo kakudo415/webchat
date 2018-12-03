@@ -34,7 +34,7 @@ const appendMessage = (msg) => {
   infoElm.classList.add('message-info');
   userElm.classList.add('info-userid');
   userElm.textContent = msg.uid;
-  timeElm.textContent = `${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}:${('0' + time.getSeconds()).slice(-2)}`;
+  timeElm.textContent = `${time.getFullYear()}年${time.getMonth() + 1}月${time.getDate()}日 ${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}:${('0' + time.getSeconds()).slice(-2)}`;
   timeElm.classList.add('info-time');
   infoElm.appendChild(userElm);
   infoElm.appendChild(timeElm);
@@ -47,7 +47,7 @@ const nowTime = () => {
   return Math.round(new Date().getTime() / 1000);
 };
 
-connect('wss://kakudo.app/webchat/ws/');
+connect('ws://127.0.0.1:50000/');
 
 messageInput.oninput = () => {
   if (messageInput.value.length > 0) {
@@ -59,7 +59,7 @@ messageInput.oninput = () => {
     submitButton.style.background = '#0002';
     submitButton.style.cursor = 'default';
   }
-}
+};
 
 submitButton.onclick = () => {
   if (messageInput.value.length === 0) {
