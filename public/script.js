@@ -2,7 +2,7 @@
 const messageArea = document.getElementById('message-area');
 const messageInput = document.getElementById('message-input');
 const submitButton = document.getElementById('submit-button');
-var ws; // WebSocket
+var ws;  // WebSocket
 
 const connect = (url) => {
   ws = new WebSocket(url);
@@ -34,7 +34,7 @@ const appendMessage = (msg) => {
   infoElm.classList.add('message-info');
   userElm.classList.add('info-userid');
   userElm.textContent = msg.uid;
-  timeElm.textContent = `${time.getFullYear()}年${time.getMonth() + 1}月${time.getDate()}日 ${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}:${('0' + time.getSeconds()).slice(-2)}`;
+  timeElm.textContent = `${time.getFullYear()}å¹´${time.getMonth() + 1}æœˆ${time.getDate()}æ—¥ ${time.getHours()}:${('0' + time.getMinutes()).slice(-2)}:${('0' + time.getSeconds()).slice(-2)}`;
   timeElm.classList.add('info-time');
   infoElm.appendChild(userElm);
   infoElm.appendChild(timeElm);
@@ -47,7 +47,7 @@ const nowTime = () => {
   return Math.round(new Date().getTime() / 1000);
 };
 
-connect('ws://127.0.0.1:50000/');
+connect('wss://kakudo.app/webchat/ws/');
 
 messageInput.oninput = () => {
   if (messageInput.value.length > 0) {
