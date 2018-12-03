@@ -1,5 +1,5 @@
 #message-area-container {
-  padding: 0.5rem 0 4rem;
+  padding: 3rem 0 0.5rem;
 }
 
 #message-area {
@@ -32,7 +32,7 @@
   width: 100%;
   padding: 0.5rem 0;
   position: fixed;
-  bottom: 0;
+  top: 0;
   z-index: 3;
   background: #FFF;
 }
